@@ -20,8 +20,11 @@ nginx_vhosts:
     root: /vagrant/web
     index: index.php
     extra_parameters: |
+      location / {
+        try_files $uri $uri/ /index.php?$args;
+      }
       location ~ \.php(/|$) {
-        try_files $uri =404;
+        try_files $uri $uri/ /index.php;
         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
         fastcgi_pass {{ php_fpm_listen }};
         fastcgi_index index.php;
