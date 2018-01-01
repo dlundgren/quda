@@ -1,0 +1,55 @@
+---
+- hosts: all
+  become: yes
+  gather_facts: yes
+  vars_files:
+    - ../vagrant.yml
+  vars:
+    percona_server_root_password: root
+    php_version: 7.2
+    php_fpm_listen: "127.0.0.1:9000"
+    php_fpm_daemon: "php{{ php_version }}-fpm"
+    php_fpm_conf_path: "/etc/php/{{ php_version }}/fpm"
+    php_conf_paths:
+      - "/etc/php/{{ php_version }}/fpm"
+      - "/etc/php/{{ php_version }}/cli"
+    php_extension_conf_paths:
+      - "/etc/php/{{ php_version }}/fpm/conf.d"
+      - "/etc/php/{{ php_version }}/cli/conf.d"
+    php_enable_webserver: false
+    php_enable_php_fpm: true
+    php_packages:
+      - php7.2-common
+      - php7.2-cli
+      - php7.2-fpm
+      - php7.2-bz2
+      - php7.2-bcmath
+      - php7.2-gd
+      - php7.2-curl
+      - php7.2-intl
+      - php7.2-json
+      - php7.2-mbstring
+      - php7.2-mysql
+      - php7.2-opcache
+      - php7.2-readline
+      - php7.2-sqlite3
+      - php7.2-zip
+      - php7.2-xml
+      - php7.2-xmlrpc
+      - php-apcu
+      - composer
+    nginx_worker_connections: 1024
+  roles:
+    - dincho.percona-server
+    - benjamin-smith.ondrej-php-repo
+    - geerlingguy.nginx
+    - geerlingguy.php
+#  tasks:
+#    - become_user: vagrant
+#      composer:
+#        command: install
+#        working_dir: /vagrant
+#        no_dev: false
+#        ignore_platform_reqs: true
+#        prefer_dist: true
+

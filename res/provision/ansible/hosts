@@ -1,0 +1,5 @@
+[development]
+172.31.31.30 ansible_connection=local
+
+[web]
+172.31.31.30 ansible_connection=local

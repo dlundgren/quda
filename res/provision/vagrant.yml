@@ -1,0 +1,42 @@
+---
+vagrant_ip: '192.168.50.60'
+vagrant_cpus: 1
+vagrant_memory: 512 # in MB
+vagrant_box: 'geerlingguy/ubuntu1604'
+vagrant_box_version: '<= 2.3.8'
+vagrant_ansible_version: '2.3.0'
+vagrant_skip_galaxy: false
+
+vagrant_install_plugins: true
+vagrant_plugins:
+  - name: vagrant-bindfs
+  - name: vagrant-hostmanager
+
+nginx_vhosts:
+  - listen: 80
+    server_name: quda.dev
+    access_log: /tmp/access.log
+    error_log: /tmp/error.log
+    root: /vagrant/web
+    index: index.php
+    extra_parameters: |
+      location ~ \.php(/|$) {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+        fastcgi_pass {{ php_fpm_listen }};
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info if_not_empty;
+      }
+
+# Array of synced folders:
+# - local_path: .
+#   destination: /path/on/vm
+#   create: false
+#   type: nfs
+#   bindfs: true
+#   mount_options: []
+#   bindfs_options: {}
+# See https://www.vagrantup.com/docs/synced-folders/basic_usage.html#mount_options
+vagrant_synced_folders: []
