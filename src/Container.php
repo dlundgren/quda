@@ -22,6 +22,10 @@ class Container
 
 	public function get($service)
 	{
+		if ($service instanceof \Closure) {
+			return $service;
+		}
+
 		try {
 			$this->internal = true;
 			$instance = parent::get($service);

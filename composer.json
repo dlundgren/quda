@@ -1,0 +1,26 @@
+{
+    "name": "dlundgren/queue-demo",
+    "description": "Demo for Pinch Hitting a job queue with MySQL",
+    "minimum-stability": "dev",
+    "autoload" : {
+      "psr-4": {
+          "Quda\\" : "src",
+          "Quda\\_Config\\" : "res/config"
+      }
+    },
+    "require": {
+        "fastframe/kernel": "dev-master",
+        "slim/slim": "4.x-dev",
+        "slim/http": "^0.3.0",
+        "aura/di": "3.x-dev",
+        "collective/aura-di-slim": "^1.0@beta",
+        "jeremeamia/xstatic": "dev-master",
+        "monolog/monolog": "^2.0@dev",
+        "dlundgren/phrender": "^0.1.1",
+        "doctrine/dbal": "^2.7@dev",
+        "ramsey/uuid": "^3.0@dev",
+        "josegonzalez/queuesadilla": "dev-master",
+        "symfony/console": "^4.1@dev",
+        "pagerfanta/pagerfanta": "^1.0"
+    }
+}

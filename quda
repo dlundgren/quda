@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+/**
+ * Console for Queue Demo application
+ *
+ * @author  David Lundgren <dlundgren@syberisle.net>
+ * @package quda
+ */
+
+$rootPath   = __DIR__;
+$autoloader = require "{$rootPath}/vendor/autoload.php";
+
+(new \Quda\Application($rootPath, $autoloader))->run();

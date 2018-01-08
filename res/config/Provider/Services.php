@@ -8,6 +8,7 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Quda\Proxy;
+use Quda\Queue\Job\Repository;
 use Quda\Vendor\FastFrame\Kernel\IsProvider;
 
 class Services
@@ -17,7 +18,8 @@ class Services
 
 	public function define(ContainerInterface $container)
 	{
-		$container->set('log', function () {
+		$container->set(
+			'log', function () {
 			$handler = new RotatingFileHandler($this->env->rootPath() . '/data/logs/run.log', 0, $this->env->get('log_level', Logger::WARNING));
 			$handler->setFormatter(new LineFormatter("[%datetime%] %message% %extra% %context%\n"));
 
@@ -27,11 +29,12 @@ class Services
 			return $logger;
 		});
 		$this->env['proxyManager']->addProxy('Log', Proxy\Log::class);
-	}
 
-	public function modify(ContainerInterface $container)
-	{
-		// TODO: Implement modify() method.
-	}
+		$db = $container->lazyGet('database:queue');
 
+		$container->params[Repository::class] = [
+			'db'       => $db,
+			'jobTable' => 'queue_jobs'
+		];
+	}
 }

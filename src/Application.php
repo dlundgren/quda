@@ -25,20 +25,32 @@ class Application
 		$container = new Container(new InjectionFactory(new Resolver(new Reflector())));
 		parent::__construct([], $container);
 
-		$env                   = new Environment($rootPath, $autoloader);
+		$env = new Environment($rootPath, $autoloader);
+		$env->load();
 		$this->containerConfig = new System($env);
 
-		$container->set('app/router', $this);
+		$container->set('app', $this);
 		$container->set('env', $env);
 
 		$this->containerConfig->define($container);
+
+		$container->set('router', $this->getRouter());
 	}
 
 	public function run()
 	{
 		$this->containerConfig->modify($this->getContainer());
 
-		return parent::run();
+		$container = $this->getContainer();
+		if ($container->has('console')) {
+			return $container->get('console')->run();
+		}
+
+		$response = $this->process($container->get('request'), $container->get('response'));
+
+		$this->respond($response);
+
+		return $response;
 	}
 
 	/**
@@ -57,7 +69,9 @@ class Application
 		$di = $this->getContainer();
 		if (is_string($callable)) {
 			if ($di->has($callable)) {
-				$callable = array($di->get($callable), 'handle');
+				$callable = function ($request, $response, $args) use (&$di, $callable) {
+					return $di->get($callable)->handle($request, $response, $args);
+				};
 			}
 		}
 

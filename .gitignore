@@ -1,0 +1,6 @@
+.env
+vendor/
+.idea/
+data/
+.vagrant/
+composer.lock

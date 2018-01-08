@@ -26,6 +26,11 @@ trait SendsHtmlResponse
 
 	public function handle(Request $request, Response $response): Response
 	{
-		return $this->responder->respond($response, [], $this);
+		return $this->responder->respond($response, $this->data($request, $response), $this);
+	}
+
+	protected function data(Request $request, Response $response): array
+	{
+		return [];
 	}
 }

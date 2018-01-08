@@ -1,0 +1,91 @@
+<?php
+$jobs = View::paginate($this->jobs);
+$resolveJobStatus = function ($job) {
+	if ($job->expiresAt() || $job->delayUntil()) {
+		return 'd';
+	}
+	elseif ($job->lockId() == -1) {
+		return 'f';
+	}
+	elseif ($job->lockId()) {
+		return 'r';
+	}
+	return 'p';
+};
+
+
+$convertToHumanStatus = function ($status) {
+	switch ($status) {
+		case 'f': return 'Failed';
+		case 'p': return 'Pending';
+		case 'r' : return 'In Progress';
+		case 'd': return 'Delayed';
+		default: return 'Unknown';
+	}
+};
+$worker = $this->worker;
+?>
+
+<div class="container">
+	<ol class="breadcrumb">
+		<li><a href="<?= View::urlFor('site') ?>"><i class="fa fa-home"></i></a></li>
+		<li>Jobs</li>
+	</ol>
+	<div class="row">
+		<div class="col-xs-12">
+			<?php if (empty($worker['running'])): ?>
+				<div class="alert alert-danger clearfix">
+					Queue Worker is not running
+					<a href="" class="btn btn-xs btn-primary pull-right">Restart</a>
+				</div>
+			<?php else: ?>
+				<div class="alert alert-info">Queue Worker is running (PID: <?=$worker['pid']?>)</div>
+			<?php endif; ?>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel">
+				<div class="panel-body">
+					<table class="table">
+						<thead>
+						<tr>
+							<th>Queue</th>
+							<th>Status</th>
+							<th>Job</th>
+							<th>Payload</th>
+							<th><span class="sr-only">Actions</span></th>
+						</tr>
+						</thead>
+						<tbody>
+						<?php foreach ($jobs->current() as $job):
+						$status = $resolveJobStatus($job);
+						?>
+							<tr>
+								<td><?= $job->queue() ?></td>
+								<td><?= $convertToHumanStatus($status) ?></td>
+								<td><?= $job->name() ?></td>
+								<td><?= json_encode($job->payload()) ?></td>
+								<td><?php switch($status) {
+										case 'f':
+											echo $this->partial('queue/actions/failed', ['job' => $job]);
+											break;
+										case 'p':
+											echo $this->partial('queue/actions/pending', ['job' => $job]);
+											break;
+										case 'r':
+											echo $this->partial('queue/actions/running', ['job' => $job]);
+											break;
+										case 'd':
+											echo $this->partial('queue/actions/delayed', ['job' => $job]);
+											break;
+									}?></td>
+							</tr>
+						<?php endforeach; ?>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
