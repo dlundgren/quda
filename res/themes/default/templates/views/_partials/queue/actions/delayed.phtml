@@ -1,0 +1,3 @@
+<?php $job = $this->job; ?>
+
+<a data-toggle="confirm" data-action="retry" data-method="POST" href="<?= View::urlFor('job-retry', ['id' => (string)$job->id()]) ?>" class="btn btn-info btn-xs">Retry</a>

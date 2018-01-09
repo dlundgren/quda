@@ -21,13 +21,20 @@ class Routing
 		// front-end no login
 		$router->get('/', Action\Site::class)->setName('site');
 
+		$router->group('/demo', function() {
+			$this->get('/email-failure', Action\DemoJob::class)->setName('email-failure');
+			$this->get('/email-success', Action\DemoJob::class)->setName('email-success');
+			$this->get('/process-image', Action\DemoJob::class)->setName('process-image');
+			$this->get('/pop-a-top', Action\DemoJob::class)->setName('pop-a-top');
+			$this->get('/in-the-future', Action\DemoJob::class)->setName('in-the-future');
+		});
 		$router->get('/queue', Action\Queue\Dashboard::class)->setName('dashboard');
 		$router->group('/queue/job/{id}', function() {
-			$this->get('', Action\Queue\Job\Display::class)->setName('job-detail');
-//			$this->put('', Action\Queue\Job\Retry::class)->setName('job-retry');
-//			$this->delete('', Action\Queue\Job\Delete::class)->setName('job-delete');
+			$this->get('', Action\Queue\Job\Display::class)->setName('job-view');
+			$this->get('/retry', Action\Queue\Job\Retry::class)->setName('job-retry');
+			$this->get('/delete', Action\Queue\Job\Delete::class)->setName('job-delete');
 		});
-//		$router->delete('/queue/worker', Action\Queue\WorkerRestart::class)->setName('worker-restart');
+		$router->get('/queue/worker', Action\Queue\Restart::class)->setName('restart');
 
 	}
 

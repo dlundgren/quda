@@ -10,10 +10,14 @@ namespace Quda\_Config\Provider;
 
 use FastFrame\Kernel\Provider;
 use Interop\Container\ContainerInterface;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
 use Quda\_Config\System;
 use Quda\Vendor\FastFrame\Kernel\IsProvider;
 use Quda\Job\SendConfirmationEmail;
 use Quda\Job\SendResetEmail;
+use Quda\Proxy;
 use Quda\Queue\Worker\ContainerForkingWorker;
 use Quda\Queue\DoctrineEngine;
 use Quda\Queue\Manager;
@@ -36,7 +40,7 @@ class Queues
 	public function define(ContainerInterface $di)
 	{
 		$jobsTable = 'queue_jobs';
-		$db        = $di->lazyGet('db/apply');
+		$db        = $di->lazyGet('database:queue');
 		$engine    = [
 			'uuidFactory' => $di->lazyGet(System::UUID_FACTORY_KEY),
 			'conn'        => $db,
@@ -58,7 +62,7 @@ class Queues
 			'engine'     => $di->lazyGet('queue/engine'),
 			'logger'     => $di->lazyGet('queue/logger'),
 			'options'    => [
-				'pidFile' => "{$this->path}/data/queue.pid"
+				'pidFile' => "{$this->env->rootPath()}/data/queue.pid"
 			]
 		];
 		$di->params[Manager::class]                = [
@@ -67,18 +71,23 @@ class Queues
 		];
 
 		$di->set(
-			'queue/logger', $di->lazy(
-			function () use ($di) {
-				// We need to configure the queue to log to a new location
-				AnalogFile::setFile($this->path . '/data/logs/queue.log');
+			'queue/logger', function () {
+			$handler = new RotatingFileHandler('/home/vagrant/logs/queue.log', 0, $this->env->get('log_level', Logger::DEBUG));
+			$handler->setFormatter(new LineFormatter("[%datetime%] %message% %extra% %context%\n"));
 
-				return $di->get('logger');
-			}));
+			$logger = new Logger('queue');
+			$logger->pushHandler($handler);
+
+			return $logger;
+		});
+
 		$di->set('queue/repository:job', $di->lazyNew(JobRepository::class));
 		$di->set('queue/engine', $di->lazyNew(DoctrineEngine::class, $engine));
 		$di->set('queue/manager', $di->lazyNew(Manager::class));
 		$di->set('app/queue', $di->lazyNew(Queue::class, ['engine' => $di->lazyGet('queue/engine')]));
 
 		$di->set('queue/worker', $di->lazyNew(ContainerForkingWorker::class));
+
+		$this->env['proxyManager']->addProxy('Queue', Proxy\Queue::class);
 	}
 }

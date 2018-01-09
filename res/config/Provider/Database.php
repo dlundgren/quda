@@ -12,8 +12,10 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Types\Type;
 use FastFrame\Kernel\Provider;
 use Interop\Container\ContainerInterface;
+use Quda\_Config\System;
 use Quda\Vendor\Doctrine\Type\UuidBinary;
 use Quda\Vendor\FastFrame\Kernel\IsProvider;
+use Ramsey\Uuid\UuidFactory;
 
 /**
  * Database configuration and setup
@@ -27,6 +29,8 @@ class Database
 
 	public function define(ContainerInterface $di)
 	{
+		$di->set(System::UUID_FACTORY_KEY, $di->lazyNew(UuidFactory::class));
+
 		$options = [
 			\PDO::ATTR_CASE => \PDO::CASE_LOWER,
 		];

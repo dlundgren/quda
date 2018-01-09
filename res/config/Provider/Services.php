@@ -20,7 +20,7 @@ class Services
 	{
 		$container->set(
 			'log', function () {
-			$handler = new RotatingFileHandler($this->env->rootPath() . '/data/logs/run.log', 0, $this->env->get('log_level', Logger::WARNING));
+			$handler = new RotatingFileHandler('/home/vagrant/logs/run.log', 0, $this->env->get('log_level', Logger::WARNING));
 			$handler->setFormatter(new LineFormatter("[%datetime%] %message% %extra% %context%\n"));
 
 			$logger = new Logger('services');

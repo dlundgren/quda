@@ -3,6 +3,7 @@
 namespace Quda\WebRequest\Action\Queue;
 
 use Quda\Queue\Job\Repository;
+use Quda\Utility\Utility;
 use Quda\WebRequest\Action\AbstractAction;
 use Quda\WebRequest\Responder\Html;
 use Slim\Http\Request;
@@ -30,23 +31,9 @@ class Dashboard
 
 	protected function data(Request $request, Response $response): array
 	{
-		$pid     = 0;
-		$running = false;
-		if (file_exists($this->pidFile)) {
-			$pid = file_get_contents($this->pidFile);
-			// @TODO: Make this work on windows - dlundgren
-			$check = trim(`ps -p {$pid} -o command= | grep -c queue:run`);
-			if ($check > 0) {
-				$running = true;
-			}
-		}
-
 		return [
 			'jobs'   => $this->repository->findAll(),
-			'worker' => [
-				'running' => $running,
-				'pid'     => $pid
-			]
+			'worker' => Utility::workerStatus($this->pidFile)
 		];
 	}
 }

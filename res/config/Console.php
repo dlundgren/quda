@@ -4,6 +4,7 @@ namespace Quda\_Config;
 
 use FastFrame\Kernel\Provider;
 use Interop\Container\ContainerInterface;
+use Quda\Console\Command\QueueRun;
 use Quda\Utility\Utility;
 use Quda\Vendor\FastFrame\Kernel\IsProvider;
 use Symfony\Component\Console\Application;
@@ -15,6 +16,10 @@ class Console
 
 	public function define(ContainerInterface $container)
 	{
+		$container->params[QueueRun::class] = [
+			'container' => $container
+		];
+
 		$container->set(
 			'console', $container->lazy(
 			function () use (&$container) {

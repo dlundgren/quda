@@ -1,0 +1,49 @@
+<?php $worker = $this->worker; ?>
+<div class="container">
+	<ol class="breadcrumb">
+		<li><a href="<?= View::urlFor('site') ?>"><i class="fa fa-home"></i></a></li>
+	</ol>
+	<div class="row">
+		<div class="col-xs-12">
+			<a class="btn btn-xs btn-info" href="<?= View::urlFor('site') ?>">Refresh</a>
+			<a class="btn btn-xs btn-info" href="<?= View::urlFor('dashboard') ?>">Dashboard</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">&nbsp;</div>
+	</div>
+	<div class="row">
+		<div class="col-lg-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Actions</div>
+				<div class="panel-body">
+					<p><a class="btn btn-xs btn-info" href="<?= View::urlFor('email-failure') ?>">Send Email (failure)</a></p>
+					<p><a class="btn btn-xs btn-info" href="<?= View::urlFor('email-success') ?>">Send Email (success)</a></p>
+					<p><a class="btn btn-xs btn-info" href="<?= View::urlFor('process-image') ?>">Process an Image</a></p>
+					<p><a class="btn btn-xs btn-info" href="<?= View::urlFor('pop-a-top') ?>">Pop a top</a></p>
+					<p><a class="btn btn-xs btn-info" href="<?= View::urlFor('in-the-future') ?>">In the future</a></p>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Queue: emails (<?= $this->emails->count() ?>)</div>
+				<div class="panel-body">
+					<?php foreach ($this->emails->items() as $email): ?>
+					<p><?= array_pop($email->payload()) ?> (<?= View::jobStatus($email) ?>)</p>
+					<?php endforeach ?>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="panel panel-default">
+				<div class="panel-heading">Queue: others (<?= $this->others->count() ?>)</div>
+				<div class="panel-body">
+					<?php foreach ($this->others->items() as $job): ?>
+						<p><?= array_pop(explode('\\', $job->name())) ?>: <?= array_pop($job->payload()) ?> (<?= View::jobStatus($job) ?>)</p>
+					<?php endforeach ?>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

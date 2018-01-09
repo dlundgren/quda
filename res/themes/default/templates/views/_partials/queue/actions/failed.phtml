@@ -1,0 +1,4 @@
+<?php $job = $this->job; ?>
+<a href="<?= View::urlFor('job-view', ['id' => (string)$job->id()]) ?>" class="btn btn-warning btn-xs">View</a>
+<a data-toggle="confirm" data-action="retry" data-method="POST" href="<?= View::urlFor('job-retry', ['id' => (string)$job->id()]) ?>" class="btn btn-info btn-xs">Retry</a>
+<a data-toggle="confirm" data-action="delete" data-method="delete" href="<?= View::urlFor('job-delete', ['id' => (string)$job->id()]) ?>" class="btn btn-danger btn-xs">Delete</a>

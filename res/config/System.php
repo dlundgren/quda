@@ -28,7 +28,7 @@ class System
 		$this->providers->append(Provider\Services::class);
 		$this->providers->append(Provider\Routing::class);
 		$this->providers->append(Provider\Database::class);
-//		$this->providers->append(Provider\Queues::class);
+		$this->providers->append(Provider\Queues::class);
 		$this->providers->append(Provider\Output::class);
 
 		$this->providers->append(PHP_SAPI === 'cli' ? Console::class : WebRequest::class);

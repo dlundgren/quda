@@ -54,6 +54,11 @@ class Paginator
 		$this->rewind();
 	}
 
+	public function itemCount()
+	{
+
+	}
+
 	/**
 	 * Returns the count of pages
 	 *

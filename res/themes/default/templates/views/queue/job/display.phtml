@@ -1,0 +1,54 @@
+<?php
+$job = $this->job;
+$data = $job->data();
+$e = $data['exception'];
+$date = $job->startedAt();
+if ($date) {
+	$date = $date->format('Y-m-d H:i:s');
+}
+?>
+<div class="container queue-dashboard">
+	<ol class="breadcrumb">
+		<li><a href="<?= View::urlFor('site') ?>"><i class="fa fa-home"></i></a></li>
+		<li><a href="<?= View::urlFor('dashboard') ?>">Jobs</a></li>
+		<li>Job #<?=$job->id()?></li>
+	</ol>
+	<div class="row">
+		<div class="col-lg-12">
+			<div class="panel">
+				<div class="panel-heading"><h3  class="panel-title">Failed Job</h3></div>
+				<div class="panel-body">
+					<table class="table">
+						<tr>
+							<th>Date</th>
+							<td><?php $date  ?></td>
+						</tr>
+						<tr>
+							<th>Class</th>
+							<td><?= $job->name() ?></td>
+						</tr>
+						<tr>
+							<th>Payload</th>
+							<td><?= json_encode($job->payload()) ?></td>
+						</tr>
+						<tr>
+							<th>Exception</th>
+							<td><?= $e['class'] ?></td>
+						</tr>
+						<tr>
+							<th>Error</th>
+							<td>
+								<p><em><?= $e['message'] ?></em></p>
+								<ul>
+									<?php foreach ($e['trace'] as $trace): ?>
+										<li><?= $trace['class'] . $trace['type'] . $trace['function'] ?> (<?= $trace['file'] ?>:<?=$trace['line']?>)</li>
+									<?php endforeach; ?>
+								</ul>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

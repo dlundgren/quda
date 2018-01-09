@@ -1,3 +1,11 @@
-kakaw
-
-<a href="<?= View::urlFor('dashboard') ?>">Dashboard</a>
+<?php $worker = $this->worker; ?>
+<div class="container">
+	<ol class="breadcrumb">
+		<li><a href="<?= View::urlFor('site') ?>"><i class="fa fa-home"></i></a></li>
+	</ol>
+	<div class="row">
+		<div class="col-xs-12">
+			<a href="<?= View::urlFor('dashboard') ?>">Dashboard</a>
+		</div>
+	</div>
+</div>

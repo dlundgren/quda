@@ -153,6 +153,17 @@ class Repository
 	}
 
 	/**
+	 * Returns a list of all jobs for the given queue
+	 *
+	 * @param $queue
+	 * @return Collection
+	 */
+	public function findAllByQueue($queue)
+	{
+		return new Collection($this->db, ['queue' => $queue]);
+	}
+
+	/**
 	 * Returns a list of all running jobs
 	 *
 	 * @param $queue

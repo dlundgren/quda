@@ -53,4 +53,23 @@ class Utility
 			$console->add($container->newInstance("$namespace\\${name}"));
 		}
 	}
+
+	public static function workerStatus($pidFile)
+	{
+		$pid     = 0;
+		$running = false;
+		if (file_exists($pidFile)) {
+			$pid = file_get_contents($pidFile);
+			// @TODO: Make this work on windows - dlundgren
+			$check = trim(`ps -p {$pid} -o command= | grep -c queue:run`);
+			if ($check > 0) {
+				$running = true;
+			}
+		}
+
+		return [
+			'running' => $running,
+			'pid'     => $pid
+		];
+	}
 }
